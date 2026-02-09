@@ -9,23 +9,25 @@
         :root {
             --color-sobre: #f4dcd6;
             --color-sello: #d63447;
-            --color-papel: #ffffff;
-            --color-texto: #4a4a4a;
+            --color-papel: #fffdfa;
+            --color-texto: #5a3825;
+            --color-arbol: #8d6e63;
         }
 
         body {
             margin: 0; padding: 0; height: 100vh;
-            background: #fdf1f1;
+            background: radial-gradient(circle, #fce4ec 0%, #f8bbd0 100%);
             display: flex; align-items: center; justify-content: center;
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
 
-        /* --- Animación de Pétalos --- */
+        /* --- Pétalos de fondo (Sutiles) --- */
         .petal {
             position: fixed; top: -10%; color: #ffb7c5;
             user-select: none; z-index: 0;
             animation: fall linear forwards;
+            pointer-events: none;
         }
         @keyframes fall {
             to { transform: translateY(110vh) rotate(360deg); }
@@ -36,129 +38,225 @@
             position: relative; width: 300px; height: 200px;
             background: var(--color-sobre);
             border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             cursor: pointer; z-index: 2;
-            transition: 0.5s;
+            transition: transform 0.5s;
         }
 
         .envelope-wrapper::before {
             content: ""; position: absolute; top: 0; left: 0;
-            border-top: 100px solid #e8c4bc;
+            border-top: 105px solid #e8c4bc;
             border-left: 150px solid transparent;
             border-right: 150px solid transparent;
-            transform-origin: top; transition: 0.5s 0.3s; z-index: 4;
+            transform-origin: top; transition: transform 0.5s 0.3s; z-index: 4;
         }
 
         .envelope-wrapper.open::before { transform: rotateX(180deg); z-index: 1; }
 
         .heart-seal {
-            position: absolute; top: 75px; left: 50%; transform: translateX(-50%);
-            width: 50px; height: 50px; background: var(--color-sello);
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+            width: 55px; height: 55px; background: var(--color-sello);
             border-radius: 50%; z-index: 5;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 20px; transition: 0.3s;
+            color: white; font-size: 24px; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .envelope-wrapper.open .heart-seal { opacity: 0; }
+        .envelope-wrapper.open .heart-seal { opacity: 0; pointer-events: none; }
 
-        /* --- La Carta --- */
+        /* --- La Carta (Centrado corregido) --- */
         .letter {
-            position: absolute; bottom: 10px; left: 5%; width: 90%; height: 80%;
+            position: absolute; 
+            bottom: 10px; left: 5%; width: 90%; height: 80%;
             background: var(--color-papel); border-radius: 5px;
-            z-index: 3; transition: 0.8s; padding: 20px; text-align: center;
+            z-index: 3; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            padding: 25px; text-align: center;
             box-sizing: border-box; overflow: hidden;
         }
 
+        /* Estado Abierto: Centrado perfecto en pantalla */
         .envelope-wrapper.open .letter {
-            bottom: 50px; height: 420px; width: 320px;
-            left: 50%; transform: translateX(-50%);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: fixed;
+            top: 50%; left: 50%;
+            bottom: auto;
+            transform: translate(-50%, -50%); /* Centrado absoluto */
+            height: 520px; 
+            width: 340px;
+            max-width: 90vw;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            border-radius: 15px;
         }
 
         .letter-content { opacity: 0; transition: 0.5s 0.8s; }
         .envelope-wrapper.open .letter-content { opacity: 1; }
 
-        h1 { font-family: 'Dancing Script', cursive; color: var(--color-sello); font-size: 1.8rem; }
-        .timer { font-size: 1rem; font-weight: bold; color: #d63447; margin: 15px 0; }
+        h1 { font-family: 'Dancing Script', cursive; color: var(--color-sello); font-size: 2.2rem; margin: 10px 0; }
+        .message { font-size: 0.95rem; color: var(--color-texto); line-height: 1.4; font-style: italic; }
+        .timer { font-size: 1.1rem; font-weight: bold; color: #d63447; margin: 15px 0; padding: 5px; border-bottom: 1px solid #fce4ec; }
         
-        .tree { height: 80px; position: relative; margin-bottom: 10px; }
-        .heart-bit { 
-            position: absolute; width: 8px; height: 8px; background: #d63447; 
-            transform: rotate(45deg); border-radius: 2px;
+        /* --- El Árbol Animado --- */
+        .tree-container {
+            height: 120px; position: relative; margin: 10px auto; width: 150px;
         }
-        .heart-bit::before, .heart-bit::after {
+        .trunk {
+            width: 14px; height: 35px; background: var(--color-arbol);
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            border-radius: 3px;
+        }
+        .crown {
+            width: 100px; height: 90px;
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+        }
+        .leaf-heart {
+            position: absolute; width: 10px; height: 10px; background: #d63447;
+            transform: rotate(45deg); border-radius: 2px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        .leaf-heart::before, .leaf-heart::after {
             content: ""; position: absolute; width: 100%; height: 100%;
             background: inherit; border-radius: 50%;
         }
-        .heart-bit::before { top: -50%; } .heart-bit::after { left: -50%; }
+        .leaf-heart::before { top: -50%; } .leaf-heart::after { left: -50%; }
 
-        button {
-            width: 100%; padding: 10px; margin: 5px 0; border: none;
-            border-radius: 20px; font-weight: bold; cursor: pointer;
+        @keyframes pulse {
+            0%, 100% { transform: rotate(45deg) scale(0.8); }
+            50% { transform: rotate(45deg) scale(1.1); }
         }
-        #yes { background: var(--color-sello); color: white; }
+
+        /* Corazones que caen del árbol */
+        .falling-heart {
+            position: absolute; color: #d63447; font-size: 10px;
+            pointer-events: none; z-index: 10;
+            animation: fallTree 3s linear forwards;
+        }
+        @keyframes fallTree {
+            0% { transform: translateY(0) translateX(0); opacity: 1; }
+            100% { transform: translateY(150px) translateX(20px); opacity: 0; }
+        }
+
+        /* Botones */
+        .buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        button {
+            width: 100%; padding: 12px; border: none;
+            border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        #yes { background: var(--color-sello); color: white; box-shadow: 0 4px 10px rgba(214, 52, 71, 0.3); }
         #no { background: #eee; color: #888; position: relative; }
+
+        /* Capa de fondo oscuro al abrir */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none;
+            transition: 0.5s; z-index: 1;
+        }
+        .envelope-wrapper.open ~ .overlay { opacity: 1; }
+
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper" id="env" onclick="this.classList.add('open')">
+    <div class="envelope-wrapper" id="env" onclick="openLetter()">
         <div class="heart-seal">❤</div>
+        <div class="envelope"></div>
         <div class="letter">
             <div class="letter-content">
-                <div class="tree" id="tree"></div>
-                <h1>Para mi Lovely...</h1>
-                <p style="font-size: 0.9rem;">"Si pudiera elegir un lugar seguro, sería a tu lado."</p>
+                <div class="tree-container" id="treeContainer">
+                    <div class="crown" id="treeCrown"></div>
+                    <div class="trunk"></div>
+                </div>
+                <h1>Para mi San Valentín...</h1>
+                <p class="message">"Si pudiera elegir un lugar seguro, sería a tu lado."</p>
                 <div class="timer" id="timer">00d 00h 00m 00s</div>
-                <p>¿Quieres ser mi San Valentín?</p>
-                <button id="yes" onclick="celebrate(event)">¡SÍ! 😍</button>
-                <button id="no" onmouseover="flee(this)" ontouchstart="flee(this)">No 🤔</button>
+                <h2 style="font-size: 1.2rem; color: #d63447; margin: 10px 0;">¿Quieres ser mi San Valentín?</h2>
+                <div class="buttons">
+                    <button id="yes" onclick="celebrate(event)">¡SÍ, CLARO! 😍</button>
+                    <button id="no" onmouseover="flee(this)" ontouchstart="flee(this)">No 🤔</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="overlay"></div>
+
     <script>
-        // Lluvia de pétalos
+        // 1. Lluvia de pétalos de fondo
         setInterval(() => {
             const p = document.createElement('div');
             p.className = 'petal'; p.innerHTML = '🌸';
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.animationDuration = Math.random() * 3 + 2 + 's';
+            p.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            p.style.animationDuration = Math.random() * 3 + 3 + 's';
             document.body.appendChild(p);
-            setTimeout(() => p.remove(), 5000);
-        }, 300);
+            setTimeout(() => p.remove(), 6000);
+        }, 400);
 
-        // Árbol
-        const tree = document.getElementById('tree');
-        for(let i=0; i<40; i++) {
+        // 2. Construir el árbol
+        const crown = document.getElementById('treeCrown');
+        const colors = ['#d63447', '#f06292', '#ec407a', '#c2185b'];
+        for(let i=0; i<50; i++) {
             const h = document.createElement('div');
-            h.className = 'heart-bit';
-            h.style.left = 30 + Math.random() * 40 + '%';
-            h.style.top = Math.random() * 80 + '%';
-            h.style.transform = `rotate(45deg) scale(${Math.random() * 0.5 + 0.3})`;
-            tree.appendChild(h);
+            h.className = 'leaf-heart';
+            h.style.left = Math.random() * 100 + '%';
+            h.style.top = Math.random() * 100 + '%';
+            h.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            h.style.animationDelay = Math.random() * 2 + 's';
+            h.style.transform = `rotate(45deg) scale(${Math.random() * 0.4 + 0.4})`;
+            crown.appendChild(h);
         }
 
-        // Contador (AQUÍ PONES TU FECHA)
-        const start = new Date('2022-02-14T00:00:00');
+        // 3. Función para abrir y activar corazones del árbol
+        function openLetter() {
+            document.getElementById('env').classList.add('open');
+            // Empezar a soltar corazones del árbol después de que suba la carta
+            setTimeout(() => {
+                setInterval(createTreeHeart, 500);
+            }, 1000);
+        }
+
+        function createTreeHeart() {
+            if(!document.getElementById('env').classList.contains('open')) return;
+            const container = document.getElementById('treeContainer');
+            const h = document.createElement('div');
+            h.className = 'falling-heart';
+            h.innerHTML = '❤';
+            h.style.left = (Math.random() * 60 + 20) + '%';
+            h.style.top = '30%';
+            container.appendChild(h);
+            setTimeout(() => h.remove(), 3000);
+        }
+
+        // 4. Contador (Tu fecha aquí)
+        const start = new Date('2022-12-14T00:00:00');
         setInterval(() => {
             const now = new Date();
-            const d = Math.floor((now - start) / 86400000);
-            const h = Math.floor(((now - start) % 86400000) / 3600000);
-            const m = Math.floor(((now - start) % 3600000) / 60000);
-            const s = Math.floor(((now - start) % 60000) / 1000);
+            const diff = now - start;
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
             document.getElementById('timer').innerText = `${d}d ${h}h ${m}m ${s}s`;
         }, 1000);
 
+        // 5. Botón travieso
         function flee(btn) {
             btn.style.position = 'fixed';
-            btn.style.top = Math.random() * 80 + '%';
-            btn.style.left = Math.random() * 80 + '%';
+            btn.style.top = (Math.random() * 70 + 15) + '%';
+            btn.style.left = (Math.random() * 70 + 15) + '%';
+            btn.style.zIndex = "2000";
         }
 
+        // 6. Celebración final
         function celebrate(e) {
             e.stopPropagation();
-            document.querySelector('.letter-content').innerHTML = "<h1>¡SABÍA QUE DIRÍAS QUE SÍ! ❤️</h1><p>Te amo con todo mi corazón.</p><span style='font-size:3rem'>🌹🥰</span>";
+            const letter = document.querySelector('.letter-content');
+            letter.innerHTML = `
+                <div style="padding-top: 40px;">
+                    <h1 style="font-size: 2.5rem;">¡SÍ! ❤️</h1>
+                    <p style="font-size: 1.1rem; color: #5a3825;">Eres la persona que hace latir mi corazón cada día.</p>
+                    <p style="font-size: 0.9rem; margin-top: 20px;">¡Gracias por decir que sí!</p>
+                    <div style="font-size: 60px; margin-top: 20px; animation: pulse 1s infinite;">🌹🥰🥂</div>
+                </div>
+            `;
         }
     </script>
 </body>
